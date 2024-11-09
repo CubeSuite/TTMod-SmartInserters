@@ -13,17 +13,13 @@ namespace SmartInserters.Patches
         [HarmonyPatch(typeof(FilterInserterUI), "OnOpen")]
         [HarmonyPostfix]
         private static void ShowLimitGUI() {
-            LimitGUI.shouldShow = true;
-            uint id = LimitGUI.GetAimedAtInserter().commonInfo.instanceId;
-            LimitGUI.limit = SmartInsertersPlugin.inserterLimits.ContainsKey(id) ? SmartInsertersPlugin.inserterLimits[id] : "";
-            Debug.Log("Opening FilterInserter GUI");
+            NewLimitGUI.Show();
         }
 
         [HarmonyPatch(typeof(FilterInserterUI), "OnClose")]
         [HarmonyPostfix]
         private static void HideLimitGUI() {
-            LimitGUI.shouldShow = false;
-            Debug.Log("Closing FilterInserter GUI");
+            NewLimitGUI.Hide();
         }
     }
 }

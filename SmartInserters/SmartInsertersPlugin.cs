@@ -1,6 +1,7 @@
 ﻿using BepInEx;
 using BepInEx.Configuration;
 using BepInEx.Logging;
+using CasperEquinoxGUI;
 using HarmonyLib;
 using SmartInserters.Patches;
 using System;
@@ -15,7 +16,7 @@ namespace SmartInserters
     {
         private const string MyGUID = "com.equinox.SmartInserters";
         private const string PluginName = "SmartInserters";
-        private const string VersionString = "1.0.0";
+        private const string VersionString = "2.0.0";
 
         private static readonly Harmony Harmony = new Harmony(MyGUID);
         public static ManualLogSource Log = new ManualLogSource(PluginName);
@@ -25,8 +26,8 @@ namespace SmartInserters
 
         #region Config Entries
 
-        public static ConfigEntry<float> guiXOffset;
-        public static ConfigEntry<float> guiYOffset;
+        public static ConfigEntry<int> guiXOffset;
+        public static ConfigEntry<int> guiYOffset;
 
         #endregion
 
@@ -34,7 +35,7 @@ namespace SmartInserters
             Logger.LogInfo($"PluginName: {PluginName}, VersionString: {VersionString} is loading...");
             Harmony.PatchAll();
 
-            LimitGUI.LoadImages();
+            CaspuinoxGUI.ReadyForGUI += OnReadyForGUI;
             CreateConfigEntries();
             ApplyPatches();
 
@@ -42,10 +43,10 @@ namespace SmartInserters
             Log = Logger;
         }
 
-        private void OnGUI() {
-            if (LimitGUI.shouldShow) {
-                LimitGUI.DrawGUI();
-            }
+        // Events
+
+        private void OnReadyForGUI() {
+            NewLimitGUI.CreateLimitGUI();
         }
 
         // Data Functions
@@ -84,8 +85,8 @@ namespace SmartInserters
         }
 
         private void CreateConfigEntries() {
-            guiXOffset = Config.Bind("General", "GUI X Offset", -350f, new ConfigDescription("Controls the horizontal position of the limit GUI"));
-            guiYOffset = Config.Bind("General", "GUI Y Offset", 65f, new ConfigDescription("Controls the vertical position of the limit GUI"));
+            guiXOffset = Config.Bind("General", "GUI X Offset", 0, new ConfigDescription("Controls the horizontal position of the limit GUI"));
+            guiYOffset = Config.Bind("General", "GUI Y Offset", 0, new ConfigDescription("Controls the vertical position of the limit GUI"));
         }
     }
 }
